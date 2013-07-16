@@ -1,4 +1,26 @@
-Image-gallery
-=============
+Image-Gallery
+===========
+  - Desktop Suport: Chrome, Firefox, Internet Explorer 9+
+  - Mobile Support: IOS, Android
 
-AngularJS image gallery
+  - Fully responsive
+  - CSS3 Animations
+  - Handles images with varying height
+
+  - Fullscreen Mode
+     - Vertical Overflow scrolling
+
+  - Dynamic image size switching (small, medium, large)
+  - Keyboard support
+
+  - Mobile Features
+     - Mobile tap, swipe
+
+
+  ### Planned Features
+
+  - Mobile Touch/Drag scrolling
+  - Additional content types:
+     - Video
+     - HTML
+
