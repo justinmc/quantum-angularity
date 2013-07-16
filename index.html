@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" ng-app="Hexangular" ng-controller="HexangularController"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Image Gallery</title>
+        <meta name="description" content="">
+
+        <!-- Set the viewport width to device width for mobile -->
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+
+        <script src="lib/modernizr.js"></script>
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="dist/styles/app.css">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- header -->
+        <header class="row">
+            <div class="large-12 columns">
+                <h2>Image-Gallery</h2>
+            </div>
+        </header>
+
+        <!-- content gallery -->
+        <div class="row">
+            <div class="columns large-12">
+
+                <!-- directive: content gallery -->
+                <div content-gallery small-image-list="smallImages" medium-image-list="mediumImages" large-image-list="largeImages" thumbnail-image-list="thumbnailImages" thumbnail-width="110" thumbnail-height="67" small-width="500" medium-width="900" large-width="1200"></div>
+
+            </div>
+        </div>
+
+        <!-- Angular View -->
+        <div id="angular-container" ng-view></div>
+
+
+        <!-- libraries -->
+        <script src="lib/jquery-2.0.0.min.js"></script>
+        <script src="lib/angular-1.0.6.min.js"></script>
+
+        <!-- application -->
+        <script src="dist/scripts/hexangular_lib.js"></script>
+        <script src="dist/scripts/hexangular_app.js"></script>
+    </body>
+</html>
