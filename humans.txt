@@ -2,11 +2,12 @@
 # The humans responsible & technology colophon
 
 # TEAM
-
+  Michael Martin
 
 # THANKS
 
-    <name>
+  Jay Rogers
+  Tim Thomas
 
 # TECHNOLOGY COLOPHON
 
