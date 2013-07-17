@@ -20,7 +20,7 @@ Quantum Angularity Image-Gallery
   - Keyboard support
 
   - Mobile Features
-     - Mobile tap, swipe
+     - Mobile tap, swipe.
 
 
   ### Planned Features
