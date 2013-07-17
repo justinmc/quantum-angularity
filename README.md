@@ -1,10 +1,6 @@
 Quantum Angularity Image-Gallery
 ===========
-  ### Example Code:
-  
-  Here: https://github.com/localmotors/quantum-angularity/blob/master/index.html
-  
-  ### General Information:
+  Example Code: https://github.com/localmotors/quantum-angularity/blob/master/index.html
   
   - Desktop Suport: Chrome, Firefox, Internet Explorer 9+
   - Mobile Support: IOS, Android
