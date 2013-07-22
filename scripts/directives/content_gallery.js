@@ -33,8 +33,8 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 DRAG_DISTANCE_THRESHOLD = 20;       // distance before dragging overrides tap
                 ZOOM_SCALE_MAX = 5;                 // can't zoom in closer than this factor
                 ZOOM_SCALE_MIN = .1;                // can't zoom out further than this factor
-                ZOOM_RATE_KEY = .1;                  // zoom speed using the keyboard +/-
-                ZOOM_RATE_TOUCH = .01;              // zoom speed using multitouch pinchin/pinchout
+                ZOOM_RATE_KEY = 1.1;                  // zoom speed using the keyboard +/-
+                ZOOM_RATE_TOUCH = 1.01;              // zoom speed using multitouch pinchin/pinchout
 
             // properties
             var ctrlModifier = false,
@@ -255,7 +255,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 // content gallery: pinchin
                 $contentGallery.hammer().on('pinchin', function(e) {
                     // zoom out
-                    zoom(-1 * ZOOM_RATE_TOUCH);
+                    zoom(1 / ZOOM_RATE_TOUCH);
                 });
 
                 // content gallery: pinchout
@@ -472,12 +472,12 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     });
 
                 // zoom in with the + key
-                } else if ((key == 61) && shiftModifier) {
+                } else if (((key == 61) || (key == 187)) && shiftModifier) {
                     zoom(ZOOM_RATE_KEY);
 
                 // zoom out with the - key
-                } else if (key == 173) {
-                    zoom(-1 * ZOOM_RATE_KEY);
+                } else if ((key == 173) || (key == 189)) {
+                    zoom(1 / ZOOM_RATE_KEY);
                 }
             }
 
@@ -675,11 +675,11 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                 // apply styles
                 $activeSlide.css({
-                    '-webkit-transform': 'translate3d(0px, ' + yPosition + 'px, 0px)',
-                    '-moz-transform': 'translate3d(0px, ' + yPosition + 'px, 0px)',
-                    '-ms-transform': 'translate(0px, ' + yPosition + 'px)',
-                    '-o-transform': 'translate3d(0px, ' + yPosition + 'px, 0px)',
-                    'transform': 'translate3d(0px, ' + yPosition + 'px, 0px) scale(' + currentSlide.scale + ')',
+                    '-webkit-transform': 'translate3d(0px, ' + yPosition + 'px, 0px) scale(' + currentSlide.scale + ')',
+                    '-moz-transform': 'translate3d(0px, ' + yPosition + 'px, 0px) scale(' + currentSlide.scale + ')',
+                    '-ms-transform': 'translate(0px, ' + yPosition + 'px) scale(' + currentSlide.scale + ')',
+                    '-o-transform': 'translate3d(0px, ' + yPosition + 'px, 0px) scale(' + currentSlide.scale + ')',
+                    'transform': 'translate3d(0px, ' + yPosition + 'px, 0px) scale(' + currentSlide.scale + ')'
                 });
             }
 
@@ -742,7 +742,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     }
 
                     // change the scale based on the value passed in
-                    currentSlide.scale += amount
+                    currentSlide.scale *= amount
 
                     // limi the scale between min and max values
                     if (currentSlide.scale < ZOOM_SCALE_MIN) {
@@ -752,14 +752,16 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                         currentSlide.scale = ZOOM_SCALE_MAX;
                     }
 
-                    // set the scale in css
+                    // set the scale in css, keeping the current scroll position
                     $activeSlide.css({
-                        '-webkit-transform': 'scale(' + currentSlide.scale + ')',
-                        '-moz-transform': 'scale(' + currentSlide.scale + ')',
-                        '-ms-transform': 'scale(' + currentSlide.scale + ')',
-                        '-o-transform': 'scale(' + currentSlide.scale + ')',
-                        'transform': 'scale(' + currentSlide.scale + ')'
+                        '-webkit-transform': 'translate3d(0px, ' + currentSlide.yPos + 'px, 0px) scale(' + currentSlide.scale + ')',
+                        '-moz-transform': 'translate3d(0px, ' + currentSlide.yPos + 'px, 0px) scale(' + currentSlide.scale + ')',
+                        '-ms-transform': 'translate(0px, ' + currentSlide.yPos + 'px) scale(' + currentSlide.scale + ')',
+                        '-o-transform': 'translate3d(0px, ' + currentSlide.yPos + 'px, 0px) scale(' + currentSlide.scale + ')',
+                        'transform': 'translate3d(0px, ' + currentSlide.yPos + 'px, 0px) scale(' + currentSlide.scale + ')'
                     });
+
+
                 }
             }
 
