@@ -232,6 +232,11 @@
 
         .slide {
             @include transition(opacity 500ms);
+            @include transition(-webkit-transform 150ms ease-in-out);
+            @include transition(-moz-transform 150ms ease-in-out);
+            @include transition(-ms-transform 150ms ease-in-out);
+            @include transition(-o-transform 150ms ease-in-out);
+            @include transition(transform 150ms ease-in-out);
             display: inline-block;
             vertical-align: top;
             opacity: 0;

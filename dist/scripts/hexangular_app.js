@@ -632,7 +632,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     zoom(ZOOM_RATE_KEY);
 
                 // zoom out with the - key
-                } else if ((key == 173) || (key == 189)) {
+                } else if (((key == 173) || (key == 189)) && !shiftModifier) {
                     zoom(1 / ZOOM_RATE_KEY);
                 }
             }
