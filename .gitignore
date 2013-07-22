@@ -1,3 +1,5 @@
 *.ftppass
 *.scssc
 *.sass-cache
+*.swp
+*.swo

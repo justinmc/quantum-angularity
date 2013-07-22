@@ -31,9 +31,14 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 SCROLL_MARGIN = 15,                 // margin below height overflow images
                 SWIPE_VELOCITY = 0.4,               // swipe left/right activation velocity
                 DRAG_DISTANCE_THRESHOLD = 20;       // distance before dragging overrides tap
+                ZOOM_SCALE_MAX = 5;                 // can't zoom in closer than this factor
+                ZOOM_SCALE_MIN = .1;                // can't zoom out further than this factor
+                ZOOM_RATE_KEY = .1;                  // zoom speed using the keyboard +/-
+                ZOOM_RATE_TOUCH = .01;              // zoom speed using multitouch pinchin/pinchout
 
             // properties
             var ctrlModifier = false,
+                shiftModifier = false,
                 slideInTransition = false,
                 cssanimations = false,
                 lastDelta = 0,
@@ -175,6 +180,10 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     if (e.which === 17) {
                         ctrlModifier = false;
 
+                    // shift
+                    } else if (e.which == 16) {
+                        shiftModifier = false;
+
                     // escape
                     } else if (e.which === 27) {
 
@@ -241,6 +250,18 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     $rootScope.safeApply(function() {
                         previousSlide();
                     });
+                });
+
+                // content gallery: pinchin
+                $contentGallery.hammer().on('pinchin', function(e) {
+                    // zoom out
+                    zoom(-1 * ZOOM_RATE_TOUCH);
+                });
+
+                // content gallery: pinchout
+                $contentGallery.hammer().on('pinchout', function(e) {
+                    // zoom in
+                    zoom(ZOOM_RATE_TOUCH);
                 });
 
                 // slideContainer: transitionend
@@ -425,6 +446,11 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     ctrlModifier = true;
                 }
 
+                // shift
+                if (key == 16) {
+                    shiftModifier = true;
+                }
+
                 // previous slide
                 if (key === 37) {
                     $rootScope.safeApply(function() {
@@ -444,6 +470,14 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                             nextSlide();
                         }
                     });
+
+                // zoom in with the + key
+                } else if ((key == 61) && shiftModifier) {
+                    zoom(ZOOM_RATE_KEY);
+
+                // zoom out with the - key
+                } else if (key == 173) {
+                    zoom(-1 * ZOOM_RATE_KEY);
                 }
             }
 
@@ -452,6 +486,11 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
             function setActiveSlide(index, emitEvent) {
 
                 if (disableSlideNavigation) return;
+
+                // reset the current activeSlide's scale
+                if ($activeSlide) {
+                    $activeSlide.scale = 1
+                }
 
                 lastDelta = 0;
 
@@ -473,6 +512,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                     // set current slide
                     currentSlide = $scope.imageList[index];
+                    currentSlide.scale = 1
 
                     // set slide container horizontal position
                     scrollToActiveSlide(index);
@@ -639,7 +679,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     '-moz-transform': 'translate3d(0px, ' + yPosition + 'px, 0px)',
                     '-ms-transform': 'translate(0px, ' + yPosition + 'px)',
                     '-o-transform': 'translate3d(0px, ' + yPosition + 'px, 0px)',
-                    'transform': 'translate3d(0px, ' + yPosition + 'px, 0px)'
+                    'transform': 'translate3d(0px, ' + yPosition + 'px, 0px) scale(' + currentSlide.scale + ')',
                 });
             }
 
@@ -689,6 +729,38 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
             function scrollDown() {
                 scrollCurrentSlideBy(-100);
                 lastDelta = 0;
+            }
+
+            /* zoom - zoom in/out on the current image by given amount
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+            function zoom(amount) {
+                // only zoom in fullscreen mode
+                if ($scope.state.fullscreen) {
+                    // initialize the current slide's scale if needed
+                    if (currentSlide.scale == null) {
+                        currentSlide.scale = 1;
+                    }
+
+                    // change the scale based on the value passed in
+                    currentSlide.scale += amount
+
+                    // limi the scale between min and max values
+                    if (currentSlide.scale < ZOOM_SCALE_MIN) {
+                        currentSlide.scale = ZOOM_SCALE_MIN;
+                    }
+                    else if (currentSlide.scale > ZOOM_SCALE_MAX) {
+                        currentSlide.scale = ZOOM_SCALE_MAX;
+                    }
+
+                    // set the scale in css
+                    $activeSlide.css({
+                        '-webkit-transform': 'scale(' + currentSlide.scale + ')',
+                        '-moz-transform': 'scale(' + currentSlide.scale + ')',
+                        '-ms-transform': 'scale(' + currentSlide.scale + ')',
+                        '-o-transform': 'scale(' + currentSlide.scale + ')',
+                        'transform': 'scale(' + currentSlide.scale + ')'
+                    });
+                }
             }
 
             /* enableFullscreen -
