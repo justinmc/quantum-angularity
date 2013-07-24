@@ -834,7 +834,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                 // when zoomed, the position of the image boundaries move, but yPosition does not change
                 // this offset corrects for this
-                var yOffset = currentSlide.yPos - $activeSlide.position().top;
+                var yOffset = (currentSlide.scale == 1) ? 0 : currentSlide.yPos - $activeSlide.position().top;
                 var negativeScrollLimitY = windowHeight - (activeHeight * currentSlide.scale) - SCROLL_MARGIN - $scope.thumbnailHeight + yOffset;
                 var positiveScrollLimitY = yOffset;
 
@@ -1015,6 +1015,8 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 });
             }
 
+            /* Recalculate and set the gallery size
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
             function updateGallerySize() {
                 var gallerySize = getGallerySize($scope.state.fullscreen);
 
