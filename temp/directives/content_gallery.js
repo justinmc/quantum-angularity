@@ -8,7 +8,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
     return {
         restrict: 'A',
-        template: '<div class="content-gallery" ng-class="{fullscreen: state.fullscreen, embedded: !state.fullscreen, transitions: state.transitions}"><!-- gallery interface --><div class="gallery-interface" ng-style="galleryInterfaceStyle"><!-- zoom --><div class="zoom-button only-icon icon-zoom-out" ng-show="state.fullscreen" ng-tap="disableFullscreen()"></div><div class="zoom-button only-icon icon-zoom-in" ng-show="!state.fullscreen" ng-tap="enableFullscreen()"></div><!-- next slide --><div class="activation-area next" ng-tap="nextSlide()" ng-hide="state.slideCount - 1 == state.currentSlideIndex"><div class="navigation-button next only-icon icon-chevron-right"></div></div><!-- previous slide --><div class="activation-area previous" ng-tap="previousSlide()" ng-hide="state.currentSlideIndex == 0"><div class="navigation-button previous only-icon icon-chevron-left"></div></div><!-- scroll up --><div class="activation-area up" ng-mousedown="scrollUp()" ng-hide="imageList[state.currentSlideIndex].atTop || !isImageTallerThanWindow() || !state.fullscreen"><div class="scroll-button up only-icon icon-chevron-up"></div></div><!-- scroll down --><div class="activation-area down" ng-mousedown="scrollDown()" ng-hide="imageList[state.currentSlideIndex].atBottom || !isImageTallerThanWindow() || !state.fullscreen"><div class="scroll-button down only-icon icon-chevron-down"></div></div></div><div class="gallery-container" ng-style="galleryContainerStyle" ng-class="{active: state.slideActive}"><!-- slide container --><div class="slide-container" ng-style="slideContainerStyle"><div class="slide slide-[[ key ]]" ng-style="slideStyle" ng-class="{active: key == state.currentSlideIndex}" ng-repeat="(key, image) in imageList"><img class="image-content" ng-src="[[ image.url ]]"></div></div></div><!-- directive: thumbnail-gallery --><div thumbnail-gallery thumbnail-list="thumbnailImageList" width="thumbnailWidth" spacing="4" fullscreen="state.fullscreen"></div></div>',
+        template: '<div class="content-gallery" ng-class="{fullscreen: state.fullscreen, embedded: !state.fullscreen, transitions: state.transitions}"><!-- gallery interface --><div class="gallery-interface" ng-style="galleryInterfaceStyle"><!-- zoom --><div class="zoom-button only-icon icon-zoom-out" ng-show="state.fullscreen" ng-tap="disableFullscreen()"></div><div class="zoom-button only-icon icon-zoom-in" ng-show="!state.fullscreen" ng-tap="enableFullscreen()"></div><!-- next slide --><div class="activation-area next" ng-tap="nextSlide()" ng-hide="state.slideCount - 1 == state.currentSlideIndex"><div class="navigation-button next only-icon icon-chevron-right"></div></div><!-- previous slide --><div class="activation-area previous" ng-tap="previousSlide()" ng-hide="state.currentSlideIndex == 0"><div class="navigation-button previous only-icon icon-chevron-left"></div></div><!-- scroll up --><div class="activation-area up" ng-mousedown="scrollUp()" ng-hide="imageList[state.currentSlideIndex].atTop || !isImageTallerThanWindow() || !state.fullscreen"><div class="scroll-button up only-icon icon-chevron-up"></div></div><!-- scroll down --><div class="activation-area down" ng-mousedown="scrollDown()" ng-hide="imageList[state.currentSlideIndex].atBottom || !isImageTallerThanWindow() || !state.fullscreen"><div class="scroll-button down only-icon icon-chevron-down"></div></div></div><div class="gallery-container" ng-style="galleryContainerStyle" ng-class="{active: state.slideActive}"><!-- slide container --><div class="slide-container" ng-style="slideContainerStyle"><div class="slide slide-[[ key ]] slide-zoom-animated" ng-style="slideStyle" ng-class="{active: key == state.currentSlideIndex}" ng-repeat="(key, image) in imageList"><img class="image-content" ng-src="[[ image.url ]]"></div></div></div><!-- directive: thumbnail-gallery --><div thumbnail-gallery thumbnail-list="thumbnailImageList" width="thumbnailWidth" spacing="4" fullscreen="state.fullscreen"></div></div>',
         replace: false,
         scope: {
             smallImageList: '=',
@@ -41,12 +41,15 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 shiftModifier = false,
                 slideInTransition = false,
                 cssanimations = false,
-                lastDelta = 0,
+                lastDeltaY = 0,
+                lastDeltaX = 0,
                 disableSlideNavigation = false,
                 currentGallerySize = null,
 
                 windowHeight = 0,
+                windowWidth = 0,
                 activeHeight = 0,
+                activeWidth = 0,
                 currentSlide = null;
 
             // promises
@@ -147,20 +150,9 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                     // update window height
                     windowHeight = $(window).height();
+                    windowWidth = $(window).width();
 
-                    var gallerySize = getGallerySize($scope.state.fullscreen);
-
-                    // load new gallery
-                    if (gallerySize !== currentGallerySize) {
-
-                        currentGallerySize = gallerySize;
-
-                        loadGallery($scope.state.currentSlideIndex);
-                    }
-
-                    $timeout(function() {
-                        setGalleryHeight();
-                    }, 500);
+                    updateGallerySize();
                 });
 
                 // window: keyup
@@ -202,11 +194,17 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 $contentGallery.hammer().on('drag', function(e) {
 
                     if ($scope.state.fullscreen) {
+                        
+                        var deltaY = e.gesture.deltaY;
+                        var deltaX = 0;
 
-                        var delta = e.gesture.deltaY;
+                        // side-scrolling can only happen when the image is wider than the screen
+                        if ($activeSlide.find("img").width() * currentSlide.scale > $activeSlide.width()) {
+                            deltaX = e.gesture.deltaX;
+                        }
 
                         rafId = requestAnimationFrame(function() {
-                            scrollCurrentSlideBy(delta);
+                            scrollCurrentSlideBy(deltaX, deltaY);
                         });
 
                         e.gesture.preventDefault();
@@ -222,7 +220,8 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                         if (e.gesture.distance > DRAG_DISTANCE_THRESHOLD) {
                             disableSlideNavigation = true;
                         }
-                        lastDelta = 0;
+                        lastDeltaY = 0;
+                        lastDeltaX = 0;
 
                         e.gesture.preventDefault();
                     }
@@ -253,16 +252,37 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 });
 
                 // content gallery: pinchin
-                $contentGallery.hammer().on('pinchin', function(e) {
+                $contentGallery.on('pinchin', function(e) {
+                    // do not animate pinch zooms
+                    if ($activeSlide.hasClass("slide-zoom-animated")) {
+                        $activeSlide.removeClass("slide-zoom-animated");
+                    }
+
                     // zoom out
                     zoom(1 / ZOOM_RATE_TOUCH);
                 });
 
                 // content gallery: pinchout
                 $contentGallery.hammer().on('pinchout', function(e) {
+                    // do not animate pinch zooms
+                    if ($activeSlide.hasClass("slide-zoom-animated")) {
+                        $activeSlide.removeClass("slide-zoom-animated");
+                    }
+
                     // zoom in
                     zoom(ZOOM_RATE_TOUCH);
                 });
+
+                /*
+                $(window).hammer().on('transform', function(e) {
+                    // do not animate pinch zooms
+                    if ($activeSlide.hasClass("slide-zoom-animated")) {
+                        $activeSlide.removeClass("slide-zoom-animated");
+                    }
+
+                    // zoom
+                    zoom(e.gesture.scale);
+                });*/
 
                 // slideContainer: transitionend
                 $slideContainer.bind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd msTransitionEnd', function() {
@@ -362,8 +382,10 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     image.height = loadedImage.height;
                     image.loaded = true;
                     image.yPos = 0;
+                    image.xPos = 0;
                     image.atTop = true;
                     image.atBottom = false;
+                    image.scale = 1;
 
                     // set active image once first image has loaded
                     if (index === activeIndex) {
@@ -492,7 +514,8 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     $activeSlide.scale = 1
                 }
 
-                lastDelta = 0;
+                lastDeltaY = 0;
+                lastDeltaX = 0;
 
                 // emit event by default
                 emitEvent = (typeof emitEvent === 'undefined' || emitEvent) ? true : false;
@@ -559,7 +582,9 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                 // get active slide element
                 windowHeight = $(window).height();
+                windowWidth = $(window).width();
                 activeHeight = $activeSlide.height();
+                activeWidth = $activeSlide.find("img").width();
 
                 if (activeHeight > 0) {
 
@@ -621,66 +646,92 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 // only for fullscreen mode
                 if ($scope.state.fullscreen) {
                     var delta = extractDelta(e);
-                    lastDelta = 0;
+                    lastDeltaY = 0;
 
                     // reduce delta
                     delta = delta / 3;
 
                     // set new scroll position
-                    scrollCurrentSlideBy(delta);
+                    scrollCurrentSlideBy(0, delta);
                 }
             }
 
             /* scrollCurrentSlideBy - add delta to current vertical position
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-            function scrollCurrentSlideBy(delta) {
+            function scrollCurrentSlideBy(deltaX, deltaY) {
 
                 var yPosition = currentSlide.yPos;
+                yPosition += deltaY - lastDeltaY;
+                lastDeltaY = deltaY;
 
-                yPosition += delta - lastDelta;
+                var xPosition = currentSlide.xPos;
+                xPosition += deltaX - lastDeltaX;
+                lastDeltaX = deltaX;
 
-                lastDelta = delta;
-
-                // scroll slide to new yPosition
-                scrollCurrentSlideTo(yPosition);
+                // scroll slide to newyPosition
+                scrollCurrentSlideTo(xPosition, yPosition);
             }
 
-            /* scrollCurrentSlideByTo - set new vertical position
+            /* scrollCurrentSlideTo - set new vertical position
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-            function scrollCurrentSlideTo(yPosition) {
+            function scrollCurrentSlideTo(xPosition, yPosition) {
 
-                var negativeScrollLimit = windowHeight - activeHeight - SCROLL_MARGIN - $scope.thumbnailHeight;
+                // when zoomed, the position of the image boundaries move, but yPosition does not change
+                // this offset corrects for this
+                var yOffset = currentSlide.yPos - $activeSlide.position().top;
+
+                var negativeScrollLimitY = windowHeight - (activeHeight * currentSlide.scale) - SCROLL_MARGIN - $scope.thumbnailHeight + yOffset;
+                //var positiveScrollLimit = ($activeSlide.height() - ($activeSlide.height() * currentSlide.scale)) / 2
+                var positiveScrollLimitY = yOffset;
+                //console.log("yposition is " + yPosition + " and slide pos is " + $activeSlide.position().top + " and lmiit is " + positiveScrollLimit + " and yoffset is " + yOffset);
+                //console.log("yPos is " + yPosition + " and slide pos is " + $activeSlide.position().top + " and negatuvelimit is " + negativeScrollLimit + " and yoffset is " + yOffset);
+
+                var xOffset = currentSlide.xPos - $activeSlide.position().left;
+                var negativeScrollLimitX = ((windowWidth - (activeWidth * currentSlide.scale)) / 2) - SCROLL_MARGIN;
+                var positiveScrollLimitX = -1 * negativeScrollLimitX;
+                console.log("acitve width is " + activeWidth + " and widnow width is " + windowWidth);
+                console.log("xPosition si " + xPosition + " and xOffset is " + xOffset + " and neglimitx is " + negativeScrollLimitX + " and poslimitx is " + positiveScrollLimitX + " and currentxpos is " + currentSlide.xPos);
 
                 $rootScope.safeApply(function() {
 
                     currentSlide.atBottom = false;
                     currentSlide.atTop = false;
 
+                    var currentYPosition = currentSlide.yPos;
+
                     // restrict scroll down amount
-                    if (yPosition <= negativeScrollLimit) {
-                        yPosition = negativeScrollLimit;
+                    if (yPosition <= negativeScrollLimitY) {
+                        yPosition = negativeScrollLimitY;
                         currentSlide.atBottom = true;
                         currentSlide.atTop = false;
                     }
 
                     // restrict scroll up amount
-                    if (yPosition >= 0) {
-                        yPosition = 0;
+                    if (yPosition >= positiveScrollLimitY) {
+                        yPosition = positiveScrollLimitY;
                         currentSlide.atBottom = false;
                         currentSlide.atTop = true;
+                    }
+
+                    if ((activeWidth * currentSlide.scale) > windowWidth) {
+                        console.log("active width is greater than window width");
+                        // restrict scroll left amount
+                        if (xPosition <= negativeScrollLimitX) {
+                            xPosition = negativeScrollLimitX;
+                        }
+
+                        // restrict scroll right amount
+                        if (xPosition >= positiveScrollLimitX) {
+                            xPosition = positiveScrollLimitX;
+                        }
                     }
                 });
 
                 currentSlide.yPos = yPosition;
+                currentSlide.xPos = xPosition;
 
                 // apply styles
-                $activeSlide.css({
-                    '-webkit-transform': 'translate3d(0px, ' + yPosition + 'px, 0px) scale(' + currentSlide.scale + ')',
-                    '-moz-transform': 'translate3d(0px, ' + yPosition + 'px, 0px) scale(' + currentSlide.scale + ')',
-                    '-ms-transform': 'translate(0px, ' + yPosition + 'px) scale(' + currentSlide.scale + ')',
-                    '-o-transform': 'translate3d(0px, ' + yPosition + 'px, 0px) scale(' + currentSlide.scale + ')',
-                    'transform': 'translate3d(0px, ' + yPosition + 'px, 0px) scale(' + currentSlide.scale + ')'
-                });
+                updateCSSActiveSlide();
             }
 
             /* isImageTallerThanWindow - return true if image height larger than current window height
@@ -691,7 +742,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                     var $image = $activeSlide.find('img');
 
-                    var imageHeight = $image.height();
+                    var imageHeight = $image.height() * currentSlide.scale;
 
                     return (imageHeight > windowHeight - $scope.thumbnailHeight);
                 }
@@ -701,8 +752,9 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
             function resetScroll() {
 
-                lastDelta = 0;
-                scrollCurrentSlideTo(0);
+                lastDeltaY = 0;
+                lastDeltaX = 0;
+                scrollCurrentSlideTo(0, 0);
             }
 
             /* nextSlide -
@@ -720,15 +772,15 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
             /* scrollUp - scroll up in fixed increment
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
             function scrollUp() {
-                scrollCurrentSlideBy(100);
-                lastDelta = 0;
+                scrollCurrentSlideBy(0, 100);
+                lastDeltaY = 0;
             }
 
             /* scrollDown - scroll down in fixed increment
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
             function scrollDown() {
-                scrollCurrentSlideBy(-100);
-                lastDelta = 0;
+                scrollCurrentSlideBy(0, -100);
+                lastDeltaY = 0;
             }
 
             /* zoom - zoom in/out on the current image by given amount
@@ -753,15 +805,10 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     }
 
                     // set the scale in css, keeping the current scroll position
-                    $activeSlide.css({
-                        '-webkit-transform': 'translate3d(0px, ' + currentSlide.yPos + 'px, 0px) scale(' + currentSlide.scale + ')',
-                        '-moz-transform': 'translate3d(0px, ' + currentSlide.yPos + 'px, 0px) scale(' + currentSlide.scale + ')',
-                        '-ms-transform': 'translate(0px, ' + currentSlide.yPos + 'px) scale(' + currentSlide.scale + ')',
-                        '-o-transform': 'translate3d(0px, ' + currentSlide.yPos + 'px, 0px) scale(' + currentSlide.scale + ')',
-                        'transform': 'translate3d(0px, ' + currentSlide.yPos + 'px, 0px) scale(' + currentSlide.scale + ')'
-                    });
+                    updateCSSActiveSlide();
 
-
+                    // update the gallery size to fit the slide
+                    updateGallerySize();
                 }
             }
 
@@ -802,6 +849,37 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 $timeout(function() {
                     $scope.state.transitions = true;
                 }, time);
+            }
+
+            /* Update the CSS for $activeSlide
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+            function updateCSSActiveSlide() {
+                var xPos = currentSlide.xPos,
+                    yPos = currentSlide.yPos,
+                    scale = currentSlide.scale;
+                $activeSlide.css({
+                    '-webkit-transform': 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0px) scale3d(' + scale + ', ' + scale + ', 1)',
+                    '-moz-transform': 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0px) scale3d(' + scale + ', ' + scale + ', 1)',
+                    '-ms-transform': 'translate(' + xPos + 'px, ' + yPos + 'px) scale3d(' + scale + ', ' + scale + ', 1)',
+                    '-o-transform': 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0px) scale3d(' + scale + ', ' + scale + ', 1)',
+                    'transform': 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0px) scale3d(' + scale + ', ' + scale + ', 1)'
+                });
+            }
+
+            function updateGallerySize() {
+                var gallerySize = getGallerySize($scope.state.fullscreen);
+
+                // load new gallery
+                if (gallerySize !== currentGallerySize) {
+
+                    currentGallerySize = gallerySize;
+
+                    loadGallery($scope.state.currentSlideIndex);
+                }
+
+                $timeout(function() {
+                    setGalleryHeight();
+                }, 500);
             }
 
             /* Scope Methods

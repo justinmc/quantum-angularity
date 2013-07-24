@@ -33,7 +33,7 @@
         <!-- slide container -->
         <div class="slide-container" ng-style="slideContainerStyle">
 
-            <div class="slide slide-[[ key ]]" ng-style="slideStyle" ng-class="{active: key == state.currentSlideIndex}" ng-repeat="(key, image) in imageList">
+            <div class="slide slide-[[ key ]] slide-zoom-animated" ng-style="slideStyle" ng-class="{active: key == state.currentSlideIndex}" ng-repeat="(key, image) in imageList">
                 <img class="image-content" ng-src="[[ image.url ]]">
             </div>
 

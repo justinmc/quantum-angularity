@@ -7060,6 +7060,27 @@ a.th {
   -webkit-transition: opacity 500ms;
   -moz-transition: opacity 500ms;
   transition: opacity 500ms;
+  display: inline-block;
+  vertical-align: top;
+  opacity: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003239}}
+.content-gallery .slide-container .slide * {
+  pointer-events: none;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003243}}
+.content-gallery .slide-container .slide.active {
+  opacity: 1;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003247}}
+.content-gallery .slide-container .slide .image-content {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003255}}
+.content-gallery .slide-container .slide-zoom-animated {
   -webkit-transition: -webkit-transform 150ms ease-in-out;
   -moz-transition: -webkit-transform 150ms ease-in-out;
   transition: -webkit-transform 150ms ease-in-out;
@@ -7075,24 +7096,6 @@ a.th {
   -webkit-transition: transform 150ms ease-in-out;
   -moz-transition: transform 150ms ease-in-out;
   transition: transform 150ms ease-in-out;
-  display: inline-block;
-  vertical-align: top;
-  opacity: 0;
-}
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003244}}
-.content-gallery .slide-container .slide * {
-  pointer-events: none;
-}
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003248}}
-.content-gallery .slide-container .slide.active {
-  opacity: 1;
-}
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003252}}
-.content-gallery .slide-container .slide .image-content {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
 }
 
 /* -----------------------------------------
