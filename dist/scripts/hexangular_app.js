@@ -835,18 +835,12 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 // when zoomed, the position of the image boundaries move, but yPosition does not change
                 // this offset corrects for this
                 var yOffset = currentSlide.yPos - $activeSlide.position().top;
-
                 var negativeScrollLimitY = windowHeight - (activeHeight * currentSlide.scale) - SCROLL_MARGIN - $scope.thumbnailHeight + yOffset;
-                //var positiveScrollLimit = ($activeSlide.height() - ($activeSlide.height() * currentSlide.scale)) / 2
                 var positiveScrollLimitY = yOffset;
-                //console.log("yposition is " + yPosition + " and slide pos is " + $activeSlide.position().top + " and lmiit is " + positiveScrollLimit + " and yoffset is " + yOffset);
-                //console.log("yPos is " + yPosition + " and slide pos is " + $activeSlide.position().top + " and negatuvelimit is " + negativeScrollLimit + " and yoffset is " + yOffset);
 
                 var xOffset = currentSlide.xPos - $activeSlide.position().left;
                 var negativeScrollLimitX = ((windowWidth - (activeWidth * currentSlide.scale)) / 2) - SCROLL_MARGIN;
                 var positiveScrollLimitX = -1 * negativeScrollLimitX;
-                console.log("acitve width is " + activeWidth + " and widnow width is " + windowWidth);
-                console.log("xPosition si " + xPosition + " and xOffset is " + xOffset + " and neglimitx is " + negativeScrollLimitX + " and poslimitx is " + positiveScrollLimitX + " and currentxpos is " + currentSlide.xPos);
 
                 $rootScope.safeApply(function() {
 
@@ -870,7 +864,6 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     }
 
                     if ((activeWidth * currentSlide.scale) > windowWidth) {
-                        console.log("active width is greater than window width");
                         // restrict scroll left amount
                         if (xPosition <= negativeScrollLimitX) {
                             xPosition = negativeScrollLimitX;

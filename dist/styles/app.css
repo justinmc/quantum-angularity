@@ -7081,21 +7081,21 @@ a.th {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003255}}
 .content-gallery .slide-container .slide-zoom-animated {
-  -webkit-transition: -webkit-transform 150ms ease-in-out;
-  -moz-transition: -webkit-transform 150ms ease-in-out;
-  transition: -webkit-transform 150ms ease-in-out;
-  -webkit-transition: -moz-transform 150ms ease-in-out;
-  -moz-transition: -moz-transform 150ms ease-in-out;
-  transition: -moz-transform 150ms ease-in-out;
-  -webkit-transition: -ms-transform 150ms ease-in-out;
-  -moz-transition: -ms-transform 150ms ease-in-out;
-  transition: -ms-transform 150ms ease-in-out;
-  -webkit-transition: -o-transform 150ms ease-in-out;
-  -moz-transition: -o-transform 150ms ease-in-out;
-  transition: -o-transform 150ms ease-in-out;
-  -webkit-transition: transform 150ms ease-in-out;
-  -moz-transition: transform 150ms ease-in-out;
-  transition: transform 150ms ease-in-out;
+  -webkit-transition: -webkit-transform 150ms ease-in-out, opacity 500ms;
+  -moz-transition: -webkit-transform 150ms ease-in-out, opacity 500ms;
+  transition: -webkit-transform 150ms ease-in-out, opacity 500ms;
+  -webkit-transition: -moz-transform 150ms ease-in-out, opacity 500ms;
+  -moz-transition: -moz-transform 150ms ease-in-out, opacity 500ms;
+  transition: -moz-transform 150ms ease-in-out, opacity 500ms;
+  -webkit-transition: -ms-transform 150ms ease-in-out, opacity 500ms;
+  -moz-transition: -ms-transform 150ms ease-in-out, opacity 500ms;
+  transition: -ms-transform 150ms ease-in-out, opacity 500ms;
+  -webkit-transition: -o-transform 150ms ease-in-out, opacity 500ms;
+  -moz-transition: -o-transform 150ms ease-in-out, opacity 500ms;
+  transition: -o-transform 150ms ease-in-out, opacity 500ms;
+  -webkit-transition: transform 150ms ease-in-out, opacity 500ms;
+  -moz-transition: transform 150ms ease-in-out, opacity 500ms;
+  transition: transform 150ms ease-in-out, opacity 500ms;
 }
 
 /* -----------------------------------------
