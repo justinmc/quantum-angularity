@@ -429,17 +429,6 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     zoom(ZOOM_RATE_TOUCH);
                 });
 
-                /*
-                $(window).hammer().on('transform', function(e) {
-                    // do not animate pinch zooms
-                    if ($activeSlide.hasClass("slide-zoom-animated")) {
-                        $activeSlide.removeClass("slide-zoom-animated");
-                    }
-
-                    // zoom
-                    zoom(e.gesture.scale);
-                });*/
-
                 // slideContainer: transitionend
                 $slideContainer.bind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd msTransitionEnd', function() {
                     slideInTransition = false;
@@ -828,7 +817,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 scrollCurrentSlideTo(xPosition, yPosition);
             }
 
-            /* scrollCurrentSlideTo - set new vertical position
+            /* scrollCurrentSlideTo - set new vertical position and horizontal pan position
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
             function scrollCurrentSlideTo(xPosition, yPosition) {
 
@@ -932,9 +921,9 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 lastDeltaY = 0;
             }
 
-            /* zoom - zoom in/out on the current image by given amount
+            /* zoom - zoom in/out on the current image by given factor
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-            function zoom(amount) {
+            function zoom(factor) {
                 // only zoom in fullscreen mode
                 if ($scope.state.fullscreen) {
                     // initialize the current slide's scale if needed
@@ -942,8 +931,8 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                         currentSlide.scale = 1;
                     }
 
-                    // change the scale based on the value passed in
-                    currentSlide.scale *= amount
+                    // change the scale based on the factor value passed in
+                    currentSlide.scale *= factor
 
                     // limi the scale between min and max values
                     if (currentSlide.scale < ZOOM_SCALE_MIN) {
