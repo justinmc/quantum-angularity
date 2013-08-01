@@ -82,6 +82,20 @@
             opacity: 1;
         }
 
+        &.cursor-zoom-in:hover {
+            cursor: -webkit-zoom-in;
+            cursor: -moz-zoom-in;
+            cursor: zoom-in;
+        }
+        &.cursor-zoom-out:hover {
+            cursor: -webkit-zoom-out;
+            cursor: -moz-zoom-out;
+            cursor: zoom-out;
+        }
+        &.cursor-move {
+            cursor: move;
+        }
+
         /* activation area */
         .activation-area {
             position: absolute;
@@ -106,13 +120,13 @@
 
             &.next {
                 right: 0;
-                left: 55%;
+                left: 75%;
                 top: 0;
                 bottom: 0;
             }
             &.previous {
                 left: 0;
-                right: 55%;
+                right: 75%;
                 top: 0;
                 bottom: 0;
             }
@@ -250,14 +264,6 @@
                 display: block;
                 margin: 0 auto;
             }
-        }
-
-        .slide-zoom-animated {
-            @include transition(-webkit-transform 150ms ease-in-out, opacity 500ms);
-            @include transition(-moz-transform 150ms ease-in-out, opacity 500ms);
-            @include transition(-ms-transform 150ms ease-in-out, opacity 500ms);
-            @include transition(-o-transform 150ms ease-in-out, opacity 500ms);
-            @include transition(transform 150ms ease-in-out, opacity 500ms);
         }
     }
 }

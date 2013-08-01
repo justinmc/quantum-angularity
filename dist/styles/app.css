@@ -6891,42 +6891,58 @@ a.th {
 .content-gallery .gallery-interface:hover {
   opacity: 1;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\0000386}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\0000385}}
+.content-gallery .gallery-interface.cursor-zoom-in:hover {
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;
+  cursor: zoom-in;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\0000390}}
+.content-gallery .gallery-interface.cursor-zoom-out:hover {
+  cursor: -webkit-zoom-out;
+  cursor: -moz-zoom-out;
+  cursor: zoom-out;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\0000395}}
+.content-gallery .gallery-interface.cursor-move {
+  cursor: move;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003100}}
 .content-gallery .gallery-interface .activation-area {
   position: absolute;
   cursor: pointer;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\0000391}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003105}}
 .content-gallery .gallery-interface .activation-area:hover .navigation-button {
   background-color: rgba(0, 0, 0, 0.3);
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\0000394}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003108}}
 .content-gallery .gallery-interface .activation-area:hover .scroll-button {
   background-color: rgba(0, 0, 0, 0.3);
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\0000399}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003113}}
 .content-gallery .gallery-interface .activation-area:active .navigation-button {
   background-color: rgba(0, 0, 0, 0.4);
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003102}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003116}}
 .content-gallery .gallery-interface .activation-area:active .scroll-button {
   background-color: rgba(0, 0, 0, 0.4);
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003107}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003121}}
 .content-gallery .gallery-interface .activation-area.next {
   right: 0;
-  left: 55%;
+  left: 75%;
   top: 0;
   bottom: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003113}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003127}}
 .content-gallery .gallery-interface .activation-area.previous {
   left: 0;
-  right: 55%;
+  right: 75%;
   top: 0;
   bottom: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003119}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003133}}
 .content-gallery .gallery-interface .activation-area.up {
   z-index: 1;
   top: 0;
@@ -6934,7 +6950,7 @@ a.th {
   right: 0;
   height: 40px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003126}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003140}}
 .content-gallery .gallery-interface .activation-area.down {
   z-index: 1;
   bottom: 0;
@@ -6942,7 +6958,7 @@ a.th {
   right: 0;
   height: 40px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003136}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003150}}
 .content-gallery .gallery-interface .navigation-button {
   position: absolute;
   margin-top: -11px;
@@ -6954,26 +6970,26 @@ a.th {
   color: rgba(255, 255, 255, 0.5);
 }
 @media only screen and (min-width: 768px) {
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003136}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003150}}
   .content-gallery .gallery-interface .navigation-button {
     margin-top: -25px;
     padding: 15px 5px;
     font-size: 1em;
   }
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003152}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003166}}
 .content-gallery .gallery-interface .navigation-button:before {
   opacity: .7;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003156}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003170}}
 .content-gallery .gallery-interface .navigation-button.next {
   right: 4px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003159}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003173}}
 .content-gallery .gallery-interface .navigation-button.previous {
   left: 4px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003165}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003179}}
 .content-gallery .gallery-interface .scroll-button {
   position: absolute;
   margin: 0 auto;
@@ -6987,7 +7003,7 @@ a.th {
   color: rgba(255, 255, 255, 0.5);
 }
 @media only screen and (min-width: 768px) {
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003165}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003179}}
   .content-gallery .gallery-interface .scroll-button {
     top: 0px;
     padding: 3px 15px;
@@ -6995,19 +7011,19 @@ a.th {
     font-size: 1em;
   }
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003184}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003198}}
 .content-gallery .gallery-interface .scroll-button.up {
   margin-top: 4px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003187}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003201}}
 .content-gallery .gallery-interface .scroll-button.down {
   margin-bottom: 4px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003191}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003205}}
 .content-gallery .gallery-interface .scroll-button:before {
   opacity: .7;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003197}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003211}}
 .content-gallery .gallery-interface .zoom-button {
   position: absolute;
   cursor: pointer;
@@ -7021,27 +7037,27 @@ a.th {
   color: #fff;
 }
 @media only screen and (min-width: 768px) {
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003197}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003211}}
   .content-gallery .gallery-interface .zoom-button {
     font-size: 1.6em;
     padding: 10px;
   }
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003214}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003228}}
 .content-gallery .gallery-interface .zoom-button:hover {
   background-color: rgba(255, 255, 255, 0.6);
   color: #000;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003218}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003232}}
 .content-gallery .gallery-interface .zoom-button:active {
   background-color: rgba(255, 255, 255, 0.8);
   color: #000;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003222}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003236}}
 .content-gallery .gallery-interface .zoom-button:before {
   opacity: .7;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003229}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003243}}
 .content-gallery .slide-container {
   *zoom: 1;
   position: relative;
@@ -7055,7 +7071,7 @@ a.th {
 .content-gallery .slide-container:after {
   clear: both;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003233}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003247}}
 .content-gallery .slide-container .slide {
   -webkit-transition: opacity 500ms;
   -moz-transition: opacity 500ms;
@@ -7064,38 +7080,20 @@ a.th {
   vertical-align: top;
   opacity: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003239}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003253}}
 .content-gallery .slide-container .slide * {
   pointer-events: none;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003243}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003257}}
 .content-gallery .slide-container .slide.active {
   opacity: 1;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003247}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003261}}
 .content-gallery .slide-container .slide .image-content {
   max-width: 100%;
   height: auto;
   display: block;
   margin: 0 auto;
-}
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/justin\/Programming\/quantum-angularity\/styles\/directives\/content_gallery\.scss}line{font-family:\00003255}}
-.content-gallery .slide-container .slide-zoom-animated {
-  -webkit-transition: -webkit-transform 150ms ease-in-out, opacity 500ms;
-  -moz-transition: -webkit-transform 150ms ease-in-out, opacity 500ms;
-  transition: -webkit-transform 150ms ease-in-out, opacity 500ms;
-  -webkit-transition: -moz-transform 150ms ease-in-out, opacity 500ms;
-  -moz-transition: -moz-transform 150ms ease-in-out, opacity 500ms;
-  transition: -moz-transform 150ms ease-in-out, opacity 500ms;
-  -webkit-transition: -ms-transform 150ms ease-in-out, opacity 500ms;
-  -moz-transition: -ms-transform 150ms ease-in-out, opacity 500ms;
-  transition: -ms-transform 150ms ease-in-out, opacity 500ms;
-  -webkit-transition: -o-transform 150ms ease-in-out, opacity 500ms;
-  -moz-transition: -o-transform 150ms ease-in-out, opacity 500ms;
-  transition: -o-transform 150ms ease-in-out, opacity 500ms;
-  -webkit-transition: transform 150ms ease-in-out, opacity 500ms;
-  -moz-transition: transform 150ms ease-in-out, opacity 500ms;
-  transition: transform 150ms ease-in-out, opacity 500ms;
 }
 
 /* -----------------------------------------

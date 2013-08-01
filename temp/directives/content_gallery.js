@@ -33,12 +33,12 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 DRAG_DISTANCE_THRESHOLD = 20;       // distance before dragging overrides tap
                 ZOOM_SCALE_MAX = 5;                 // can't zoom in closer than this factor
                 ZOOM_SCALE_MIN = .1;                // can't zoom out further than this factor
-                ZOOM_RATE_KEY = 1.1;                  // zoom speed using the keyboard +/-
-                ZOOM_RATE_TOUCH = 1.01;              // zoom speed using multitouch pinchin/pinchout
+                ZOOM_RATE_TAP = 1.8;                // zoom speed when tapping the image
+                ZOOM_RATE_TOUCH = 1.01;             // zoom speed when using multitouch pinchin/pinchout
+                ZOOM_RATE_WHEEL = 1.15;             // zoom speed when using the mouse wheel
 
             // properties
             var ctrlModifier = false,
-                shiftModifier = false,
                 slideInTransition = false,
                 cssanimations = false,
                 lastDeltaY = 0,
@@ -50,7 +50,8 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 windowWidth = 0,
                 activeHeight = 0,
                 activeWidth = 0,
-                currentSlide = null;
+                currentSlide = null,
+                modeZoom = false;
 
             // promises
             var smallImagesDeferred = $q.defer(),
@@ -65,6 +66,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
             var $htmlRoot = $('html'),
                 $contentGallery = $element,
                 $galleryContainer = $element.find('.gallery-container'),
+                $galleryInterface = $element.find('.gallery-interface'),
                 $slideContainer = $element.find('.slide-container'),
                 $activeSlide = null;
 
@@ -172,10 +174,6 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     if (e.which === 17) {
                         ctrlModifier = false;
 
-                    // shift
-                    } else if (e.which == 16) {
-                        shiftModifier = false;
-
                     // escape
                     } else if (e.which === 27) {
 
@@ -198,10 +196,13 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                         var deltaY = e.gesture.deltaY;
                         var deltaX = 0;
 
-                        // side-scrolling can only happen when the image is wider than the screen
+                        // side-panning can only happen when the image is wider than the screen
                         if ($activeSlide.find("img").width() * currentSlide.scale > $activeSlide.width()) {
                             deltaX = e.gesture.deltaX;
                         }
+
+                        // show the move cursor
+                        updateCursor(true);
 
                         rafId = requestAnimationFrame(function() {
                             scrollCurrentSlideBy(deltaX, deltaY);
@@ -215,6 +216,9 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 $contentGallery.hammer().on('dragend', function(e) {
 
                     if ($scope.state.fullscreen) {
+
+                        // return to the current cursor mode
+                        updateCursor();
 
                         // disable slide navigation if drag distance greater than threshold
                         if (e.gesture.distance > DRAG_DISTANCE_THRESHOLD) {
@@ -230,9 +234,30 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 // content gallery: tap
                 $contentGallery.hammer().on('tap', function(e) {
                     disableSlideNavigation = false;
+
+                    // only tap to zoom in fullscreen mode, and not when changing pages
+                    if ($scope.state.fullscreen && (e.target == $galleryInterface.get(0))) {
+
+                        // Toggle zoom mode
+                        setModeZoom(!modeZoom);
+
+                        // if entering zoom mode
+                        if (modeZoom) {
+                            // zoom in
+                            zoom(ZOOM_RATE_TAP);
+
+                        // otherwise leaving zoom mode
+                        } else {
+                            // zoom out to scale 1
+                            zoom(1 / currentSlide.scale);
+
+                            // re-center the image
+                            scrollCurrentSlideTo(0, 0);
+                        }
+                    }
                 });
 
-                // content gallery: tap
+                // content gallery: release
                 $contentGallery.hammer().on('release', function(e) {
                     disableSlideNavigation = false;
                 });
@@ -253,24 +278,18 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                 // content gallery: pinchin
                 $contentGallery.on('pinchin', function(e) {
-                    // do not animate pinch zooms
-                    if ($activeSlide.hasClass("slide-zoom-animated")) {
-                        $activeSlide.removeClass("slide-zoom-animated");
+                    if (modeZoom) {
+                        // zoom out
+                        zoom(1 / ZOOM_RATE_TOUCH);
                     }
-
-                    // zoom out
-                    zoom(1 / ZOOM_RATE_TOUCH);
                 });
 
                 // content gallery: pinchout
                 $contentGallery.hammer().on('pinchout', function(e) {
-                    // do not animate pinch zooms
-                    if ($activeSlide.hasClass("slide-zoom-animated")) {
-                        $activeSlide.removeClass("slide-zoom-animated");
+                    if (modeZoom) {
+                        // zoom in
+                        zoom(ZOOM_RATE_TOUCH);
                     }
-
-                    // zoom in
-                    zoom(ZOOM_RATE_TOUCH);
                 });
 
                 // slideContainer: transitionend
@@ -457,11 +476,6 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     ctrlModifier = true;
                 }
 
-                // shift
-                if (key == 16) {
-                    shiftModifier = true;
-                }
-
                 // previous slide
                 if (key === 37) {
                     $rootScope.safeApply(function() {
@@ -481,14 +495,6 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                             nextSlide();
                         }
                     });
-
-                // zoom in with the + key
-                } else if (((key == 61) || (key == 187)) && shiftModifier) {
-                    zoom(ZOOM_RATE_KEY);
-
-                // zoom out with the - key
-                } else if (((key == 173) || (key == 189)) && !shiftModifier) {
-                    zoom(1 / ZOOM_RATE_KEY);
                 }
             }
 
@@ -515,6 +521,9 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     if (cssanimations) {
                         slideInTransition = true;
                     }
+
+                    // reset modeZoom to normal
+                    setModeZoom(false);
 
                     // save current index
                     $scope.state.currentSlideIndex = index;
@@ -573,7 +582,6 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 windowHeight = $(window).height();
                 windowWidth = $(window).width();
                 activeHeight = $activeSlide.height();
-                activeWidth = $activeSlide.find("img").width();
 
                 if (activeHeight > 0) {
 
@@ -586,7 +594,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                         var topPadding = 0;
                         if (!isImageTallerThanWindow()) {
-                            topPadding = (fullScreenWindowHeight - activeHeight) / 2;
+                            topPadding = (fullScreenWindowHeight - activeHeight * currentSlide.scale) / 2;
                         }
 
                         // gallery styles
@@ -634,14 +642,30 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                 // only for fullscreen mode
                 if ($scope.state.fullscreen) {
+
                     var delta = extractDelta(e);
-                    lastDeltaY = 0;
 
-                    // reduce delta
-                    delta = delta / 3;
+                    // if in zoom mode, zoom
+                    if (modeZoom) {
+                        if (delta > 0) {
+                            // zoom in
+                            zoom(ZOOM_RATE_WHEEL);
 
-                    // set new scroll position
-                    scrollCurrentSlideBy(0, delta);
+                        } else {
+                            // zoom out
+                            zoom(1 / ZOOM_RATE_WHEEL);
+                        }
+
+                    // otherwise, pan up/down
+                    } else {
+                        lastDeltaY = 0;
+
+                        // reduce delta
+                        delta = delta / 3;
+
+                        // set new scroll position
+                        scrollCurrentSlideBy(0, delta);
+                    }
                 }
             }
 
@@ -778,7 +802,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     // change the scale based on the factor value passed in
                     currentSlide.scale *= factor
 
-                    // limi the scale between min and max values
+                    // limit the scale between min and max values
                     if (currentSlide.scale < ZOOM_SCALE_MIN) {
                         currentSlide.scale = ZOOM_SCALE_MIN;
                     }
@@ -786,8 +810,16 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                         currentSlide.scale = ZOOM_SCALE_MAX;
                     }
 
-                    // set the scale in css, keeping the current scroll position
-                    updateCSSActiveSlide();
+                    // if zoomed out
+                    if (factor < 1) {
+                        // set the scale in CSS and center the image
+                        scrollCurrentSlideTo(0, currentSlide.yPos);
+
+                    // otherwise zoomed in
+                    } else {
+                        // set the scale in css, keeping the current scroll position
+                        updateCSSActiveSlide();
+                    }
 
                     // update the gallery size to fit the slide
                     updateGallerySize();
@@ -802,6 +834,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                 $htmlRoot.addClass('overflow-hidden');
                 $scope.state.fullscreen = true;
+                updateCursor();
 
                 // load gallery
                 loadGallery($scope.state.currentSlideIndex);
@@ -815,6 +848,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                 $htmlRoot.removeClass('overflow-hidden');
                 $scope.state.fullscreen = false;
+                updateCursor();
 
                 // load gallery
                 loadGallery($scope.state.currentSlideIndex);
@@ -832,8 +866,46 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                     $scope.state.transitions = true;
                 }, time);
             }
+            
+            /* update the cursor, given whether or not the user is panning the image
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+            function updateCursor(panning) {
+                // set panning's default value to false
+                if (panning == null) {
+                    panning = false;
+                }
 
-            /* Update the CSS for $activeSlide
+                // if we're not in fullscreen mode
+                if (!$scope.state.fullscreen) {
+                    // show the normal cursor
+                    $galleryInterface.removeClass("cursor-zoom-out");
+                    $galleryInterface.removeClass("cursor-zoom-in");
+                    $galleryInterface.removeClass("cursor-move");
+
+                // otherwise if currently dragging to pan
+                } else if (panning) {
+                    // show the move cursor
+                    $galleryInterface.removeClass("cursor-zoom-out");
+                    $galleryInterface.removeClass("cursor-zoom-in");
+                    $galleryInterface.addClass("cursor-move");
+
+                // otherwise if in zoom mode
+                } else if (modeZoom) {
+                    // show the zoom out cursor
+                    $galleryInterface.removeClass("cursor-zoom-in");
+                    $galleryInterface.removeClass("cursor-move");
+                    $galleryInterface.addClass("cursor-zoom-out");
+                
+                // otherwise if in normal mode
+                } else {
+                    // show the zoom in cursor
+                    $galleryInterface.removeClass("cursor-zoom-out");
+                    $galleryInterface.removeClass("cursor-move");
+                    $galleryInterface.addClass("cursor-zoom-in");
+                }
+            }
+
+            /* update the CSS for $activeSlide
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
             function updateCSSActiveSlide() {
                 var xPos = currentSlide.xPos,
@@ -848,7 +920,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 });
             }
 
-            /* Recalculate and set the gallery size
+            /* recalculate and set the gallery size
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
             function updateGallerySize() {
                 var gallerySize = getGallerySize($scope.state.fullscreen);
@@ -864,6 +936,16 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 $timeout(function() {
                     setGalleryHeight();
                 }, 500);
+            }
+
+            /* change to zoom mode or normal mode
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+            function setModeZoom(modeZoomNew) {
+                // set modeZoom
+                modeZoom = (modeZoomNew === true);
+
+                // update the cursor
+                updateCursor();
             }
 
             /* Scope Methods
