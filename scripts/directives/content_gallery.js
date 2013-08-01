@@ -264,16 +264,22 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
 
                 // content gallery: swipeleft
                 $contentGallery.hammer({'swipe_velocity': SWIPE_VELOCITY}).on('swipeleft', function(e) {
-                    $rootScope.safeApply(function() {
-                        nextSlide();
-                    });
+                    // disable swiping in zoom mode
+                    if (!modeZoom) {
+                        $rootScope.safeApply(function() {
+                            nextSlide();
+                        });
+                    }
                 });
 
                 // content gallery: swiperight
                 $contentGallery.hammer({'swipe_velocity': SWIPE_VELOCITY}).on('swiperight', function(e) {
-                    $rootScope.safeApply(function() {
-                        previousSlide();
-                    });
+                    // disable swiping in zoom mode
+                    if (!modeZoom) {
+                        $rootScope.safeApply(function() {
+                            previousSlide();
+                        });
+                    }
                 });
 
                 // content gallery: pinchin
@@ -582,6 +588,7 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                 windowHeight = $(window).height();
                 windowWidth = $(window).width();
                 activeHeight = $activeSlide.height();
+                activeWidth = $activeSlide.find("img").width();
 
                 if (activeHeight > 0) {
 
@@ -810,14 +817,20 @@ App.directive('contentGallery', ['$rootScope', '$timeout', '$q', function($rootS
                         currentSlide.scale = ZOOM_SCALE_MAX;
                     }
 
-                    // if zooming out
+                    // if zooming out, set the scale in CSS and center the image
                     if (factor < 1) {
-                        // set the scale in CSS and center the image
-                        scrollCurrentSlideTo(0, currentSlide.yPos);
+                        var xPos = currentSlide.xPos,
+                            yPos = currentSlide.yPos;
+                        
+                        // if zoomed out lower than 1, center the xPosition
+                        if (currentSlide.scale < 1) {
+                            xPos = 0;
+                        }
 
-                    // otherwise zooming in
+                        scrollCurrentSlideTo(xPos, yPos);
+
+                    // otherwise zooming in, set the scale in css without moving
                     } else {
-                        // set the scale in css, keeping the current scroll position
                         updateCSSActiveSlide();
                     }
 
